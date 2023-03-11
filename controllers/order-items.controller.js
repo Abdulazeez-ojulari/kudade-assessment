@@ -12,14 +12,11 @@ export const getOrderItems = errorMiddleware(async (req, res) => {
         let sortBy = (query.sortBy && query.sortBy === "price") ? {price: 1} : {shipping_limit_date: 1}
         
         const orderItems = await orderItemsCollection
-        //   .sort(sortBy)
-        //   .limit(getPaginate.limit)
-        //   .skip(getPaginate.skip)
             .aggregate( [
                 {$match: filter},
                 {$sort: sortBy},
-                {$limit: getPaginate.limit},
                 {$skip: getPaginate.skip},
+                {$limit: getPaginate.limit},
                 {
                 $lookup:{
                     from: "products",
@@ -35,7 +32,7 @@ export const getOrderItems = errorMiddleware(async (req, res) => {
             data: toApiOrderItemSchema(orderItems), 
             total: getPaginate.docCount, 
             limit: getPaginate.limit,
-            offset: query.offset || 1
+            offset: parseInt(query.offset) || 1
         })
     } catch (error) {
         res.status(500).json({
@@ -57,7 +54,7 @@ export const deleteItem = errorMiddleware(async (req, res) => {
         let orderItem = await orderItemsCollection.findOneAndDelete(filter)
         if(orderItem.value){
             res.status(200).json({ 
-                data: orderItem,
+                data: orderItem.value,
                 message: "Order deleted successfully"
             })
         }else{
@@ -77,12 +74,12 @@ export const deleteItem = errorMiddleware(async (req, res) => {
 })
 
 const paginate = async (orderItemsCollection, query, filter) => {
-    const limit = (parseInt(query.limit) && parseInt(query.limit) <= 100) ? parseInt(query.limit) : 20;
-    let skip = parseInt(query.offset) === 1 ? 0 : limit * query.offset;
-    delete query.limit;
+    const limit = (query.limit && parseInt(query.limit) && parseInt(query.limit) <= 100) ? parseInt(query.limit) : 20;
+    let skip = query.offset ? limit * (parseInt(query.offset) - 1) : 0;
+ 
     const docCount = await orderItemsCollection.countDocuments(filter);
     if (docCount < skip) {
-      skip = (query.offset - 1) * limit;
+      skip = (parseInt(query.offset) - 1) * limit;
     }
     return { skip, limit, docCount };
 };
