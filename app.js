@@ -8,11 +8,10 @@ import dbCon from './db/connection.js'
 import accountRouter from './routes/account.route.js';
 import indexRouter from'./routes/index.js';
 import orderItemsRouter from'./routes/order_items.route.js';
-import { fileURLToPath } from 'url';
 
 var app = express();
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename);
+console.log(path.resolve())
+const __dirname = path.resolve();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
