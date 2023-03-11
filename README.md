@@ -1,17 +1,17 @@
-# How to Install
+# How to Start Application
 
 ## Prerequisites
 
 * <a href="https://nodejs.org/en/download/package-manager/" target="_blank">NodeJS</a> version up to 16.xx
 
-# In your terminal 
+## In your terminal 
 
 * Make sure you are in the project directory
 * run `npm install`
 * run `npm start`
 * paste `http://localhost:3000/` in your browser
 
-# Routes to be consumed
+## Routes to be consumed
 
 * `/order_items?limit=<limit>&offset=<offset>&sortBy=<sortBy>` - this is a `GET` request and receives and authorization header in it requests.
 
@@ -99,3 +99,10 @@ It response should looks like this:
     "message": "Seller updated successfully"
 }
 ```
+
+
+## How to run test
+
+* set evnironment varible `ORDER_ITEM_ID` that you want to delete and `TOKEN` for authentication
+
+* In the project directory, you can run `npm test`
